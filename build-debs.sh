@@ -5,12 +5,15 @@
 set -e
 
 # FIXME hardcoded module order
-for i in qtbase qtjsbackend qtxmlpatterns qtscript qtdeclarative qt3d qtlocation qtsensors; do
-	cd $i
-	dpkg-buildpackage -rfakeroot -uc -us
-	# FIXME line below does not work on scratchbox
-	#notify-send "Build of $i finished."
-	# FIXME Works for scratchbox
-	fakeroot dpkg -i ../qt5-*.deb
-	cd ..
+for i in base jsbackend xmlpatterns script declarative quick1 3d location sensors; do
+
+# FIXME hardcoded repo paths
+scratchbox -s <<EOF
+export PATH=/opt/qt5/bin:\$PATH
+export DEB_BUILD_OPTIONS="noopt"
+cd qt5/qt5-debs/qt$i
+dpkg-buildpackage -rfakeroot -uc -us 2>&1 | tee /tmp/build-$i.log
+fakeroot dpkg -i ../*$i*.deb
+EOF
+
 done
