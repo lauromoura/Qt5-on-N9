@@ -5,15 +5,9 @@
 # will be the latest '"$REMOTE"/master' SVN release.
 
 set -e
+DIR="$(cd "$( dirname "$0")" && pwd )"
 
-BRANCH="debianize"
-DISTRIBUTION="unstable"
-REMOTE="gitorious"
-
-# Adjust the values below according to your scratchbox and webkit locations
-
-SBOXHOME=/scratchbox/users/$USERNAME/home/$USERNAME
-WEBKITFOLDER=qt5/webkit-deb
+. $DIR/config.sh
 
 cd "$SBOXHOME/$WEBKITFOLDER"
 
