@@ -11,7 +11,7 @@ for i in base jsbackend xmlpatterns script declarative quick1 3d location sensor
 scratchbox -s <<EOF
 export PATH=/opt/qt5/bin:\$PATH
 export DEB_BUILD_OPTIONS="noopt"
-cd qt5/qt5-debs/qt$i
+cd qt/qt5-debs/qt$i
 dpkg-buildpackage -rfakeroot -uc -us 2>&1 | tee /tmp/build-$i.log
 fakeroot dpkg -i ../*$i*.deb
 EOF
