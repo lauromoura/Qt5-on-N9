@@ -17,9 +17,14 @@ dpkg-buildpackage -rfakeroot -uc -us -B 2>&1 | tee $LOGFILE
 EOF
 
 # Get the package name
-DEBFILE=$(grep -o [-a-z0-9]*_[.0-9]*_armel\.deb $LOGFILE)
+DEBFILE=$(grep -o [-a-z0-9]*_[.0-9a-z-]*_armel\.deb $LOGFILE)
 
 echo "Sending file $DEBFILE to device."
+
+if [ -z "$DEBFILE" ]; then
+	echo "Failed to find the debian package."
+	exit 1;
+fi
 
 # Send to device and install
 scp $PROJECTFOLDER_HOST/../$DEBFILE $N9:$N9HOME
