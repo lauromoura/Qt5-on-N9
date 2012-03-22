@@ -5,7 +5,7 @@
 set -e
 
 # FIXME hardcoded module order
-for i in base jsbackend xmlpatterns script declarative quick1 3d location sensors; do
+for i in base jsbackend xmlpatterns script declarative quick1 3d jsondb location sensors; do
 
 # FIXME hardcoded repo paths
 scratchbox -s <<EOF
