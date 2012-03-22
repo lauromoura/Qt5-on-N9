@@ -30,7 +30,9 @@ echo "Revision $svnrevision and commit $commit"
 
 git checkout "$BRANCH"
 
-if git log --format=format:%H | grep -qs "$commit"; then
+if [ -z "$commit" ]; then
+    echo "Revision not found. Building current version."
+elif git log --format=format:%H | grep -qs "$commit"; then
     echo "Already merged, just rebuild."
 else
     git merge "$commit"
