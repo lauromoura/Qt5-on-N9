@@ -5,6 +5,7 @@ import sys
 import urllib2
 import re
 import BeautifulSoup
+import json
 
 
 REVISIONS_URL = 'http://build.webkit.org/builders/Qt%20Linux%20Release?numbuilds=50'
@@ -35,16 +36,19 @@ def getRevisionTestStats(revision, build):
 
     data = regex.findall(log)
 
-    print "----------"
-    print "Revision %s / build # %s" % (revision, build)
-    for number, kind in data:
-        print "%s: %s" % (kind, number)
-
-
+    return sorted((kind, number) for number, kind in data)
+    
 
 def main():
+
+    data = []
     for revision, build in getWebKitBuildingRevisions():
-        print getRevisionTestStats(revision, build)
+        print revision
+        data.append((revision, build, getRevisionTestStats(revision, build)))
+
+    with open('results.json', 'w') as output:
+        json.dump(data, output)
+
 
 if __name__ == '__main__':
 
