@@ -1,7 +1,7 @@
 <html lang="en">
     <head>
         <title>Results for Bot {{ bot }}</title>
-        <script type="text/javascript" src="../jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
@@ -29,7 +29,7 @@
 
         var table_options = {};
 
-        var results = $.getJSON("../results/{{ botname }}.json", function(data) {
+        var results = $.getJSON("results/{{ botname }}.json", function(data) {
           $.each(data, function(index, value) {
             dataTable.addRow([parseInt(value['revision']),
                               parseInt(value['skipped'])]);
