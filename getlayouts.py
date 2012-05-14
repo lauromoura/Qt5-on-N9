@@ -8,13 +8,15 @@ import BeautifulSoup
 import json
 
 
+# TODO Hardcoded bot - Qt Linux Release
+
 REVISIONS_URL = 'http://build.webkit.org/builders/Qt%20Linux%20Release?numbuilds=50'
 TESTRUN_URL = 'http://build.webkit.org/builders/Qt%%20Linux%%20Release/builds/%s/steps/layout-test/logs/stdio/text'
 
 regex = re.compile("^[\d\:\.]* \d* Expect:\s*(\d*) (\w*).*", re.MULTILINE)
 
 
-def getWebKitBuildingRevisions():
+def getWebKitBuildingRevisions(builds=[]):
     data = urllib2.urlopen(REVISIONS_URL).read()
     soup = BeautifulSoup.BeautifulSoup(data)
 
@@ -26,8 +28,10 @@ def getWebKitBuildingRevisions():
             continue
         revision = cols[1].span.a.text
         build = cols[3].a.text.replace("#", "")
-        if cols[2].text == 'success':
+        if cols[2].text == 'success' and build not in builds:
             yield revision, build
+        else:
+            print "Skipping build", build, 'not success' if cols[2].text != 'success' else 'alread cached'
 
 
 def getRevisionTestStats(revision, build):
@@ -36,18 +40,32 @@ def getRevisionTestStats(revision, build):
 
     data = regex.findall(log)
 
-    return sorted((kind, number) for number, kind in data)
+    return dict((kind, int(number)) for number, kind in data)
     
 
 def main():
 
-    data = []
-    for revision, build in getWebKitBuildingRevisions():
-        print revision
-        data.append((revision, build, getRevisionTestStats(revision, build)))
+    filename = 'results/qtlinuxrelease.json'
 
-    with open('results.json', 'w') as output:
-        json.dump(data, output)
+    try:
+        with open(filename) as handle:
+            current_data = json.load(handle)
+            builds = [x['build'] for x in current_data]
+    except EnvironmentError:
+        current_data = []
+        builds = []
+
+    new_data = []
+
+    for revision, build in getWebKitBuildingRevisions(builds):
+        build_info = {'revision': revision, 'build':build}
+        build_info.update(getRevisionTestStats(revision, build))
+        data.append(build_info)
+
+    new_data.sort(key=lambda info: info['revision'])
+
+    with open(filename, 'w') as output:
+        json.dump(current_data + new_data, output)
 
 
 if __name__ == '__main__':
