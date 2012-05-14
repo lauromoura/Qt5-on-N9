@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import urllib2
 import re
@@ -45,7 +46,9 @@ def getRevisionTestStats(revision, build):
 
 def main():
 
-    filename = 'results/qtlinuxrelease.json'
+    path = os.path.dirname(os.path.abspath(__file__))
+
+    filename = os.path.join(path, 'results/qtlinuxrelease.json')
 
     try:
         with open(filename) as handle:
