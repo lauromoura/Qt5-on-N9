@@ -60,7 +60,7 @@ def main():
     for revision, build in getWebKitBuildingRevisions(builds):
         build_info = {'revision': revision, 'build':build}
         build_info.update(getRevisionTestStats(revision, build))
-        data.append(build_info)
+        new_data.append(build_info)
 
     new_data.sort(key=lambda info: info['revision'])
 
