@@ -11,8 +11,8 @@ import json
 
 # TODO Hardcoded bot - Qt Linux Release
 
-REVISIONS_URL = 'http://build.webkit.org/builders/Qt%20Linux%20Release?numbuilds=50'
-TESTRUN_URL = 'http://build.webkit.org/builders/Qt%%20Linux%%20Release/builds/%s/steps/layout-test/logs/stdio/text'
+REVISIONS_URL = 'http://build.webkit.sed.hu/builders/x86-32%20Linux%20Qt%20Release%20WebKit2?numbuilds=50'
+TESTRUN_URL = 'http://build.webkit.sed.hu/builders/x86-32%20Linux%20Qt%20Release%20WebKit2/builds/%s/steps/layout-test/logs/stdio/text'
 
 regex = re.compile("^[\d\:\.]* \d* Expect:\s*(\d*) (\w*).*", re.MULTILINE)
 
@@ -29,7 +29,7 @@ def getWebKitBuildingRevisions(builds=[]):
             continue
         revision = cols[1].span.a.text
         build = cols[3].a.text.replace("#", "")
-        if cols[2].text == 'success' and build not in builds:
+        if (cols[2].text == 'success' or ) and build not in builds:
             yield revision, build
         else:
             print "Skipping build", build, 'not success' if cols[2].text != 'success' else 'alread cached'
@@ -48,7 +48,7 @@ def main():
 
     path = os.path.dirname(os.path.abspath(__file__))
 
-    filename = os.path.join(path, 'results/qtlinuxrelease.json')
+    filename = os.path.join(path, 'results/x86-32linuxqtreleasewebkit2.json')
 
     try:
         with open(filename) as handle:
