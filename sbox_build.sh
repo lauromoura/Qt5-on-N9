@@ -99,7 +99,7 @@ ssh $N9 "chmod 755 /home/developer$WEBKIT_TMPDIR"
 ssh $N9 "devel-su -c \"cp -Rv /home/developer$WEBKIT_TMPDIR/* /\""
 
 echo "Removing temporary files on the device"
-ssh $N9 "rm -rf /home/developer/webkit_transfer/*"
+ssh $N9 "rm -rf /home/developer/$WEBKIT_TMPDIR"
 
 echo "Removing temporary directory on host."
 rm -rf WEBKIT_TMPDIR
