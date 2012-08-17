@@ -103,7 +103,7 @@ tar czf - $WEBKIT_TMPDIR | ssh $N9 "cd /home/developer; tar xzof -"
 
 echo "Copying files to the proper places on the device."
 ssh $N9 "chmod 755 /home/developer$WEBKIT_TMPDIR"
-ssh $N9 "devel-su -c \"cp -Rv /home/developer$WEBKIT_TMPDIR/* /\""
+ssh -t $N9 "devel-su -c \"cp -Rv /home/developer$WEBKIT_TMPDIR/* /\""
 
 echo "Removing temporary files on the device"
 ssh $N9 "rm -rf /home/developer/$WEBKIT_TMPDIR"
