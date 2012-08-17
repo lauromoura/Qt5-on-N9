@@ -9,7 +9,7 @@ BRANCH="gitorious"
 
 cd "$QT_HOME"
 
-git remote update
+git fetch origin
 git submodule foreach git fetch "$BRANCH"
 git checkout "$HASH"
 git submodule update --recursive
