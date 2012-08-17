@@ -12,6 +12,7 @@ Options:\n
 -c\t\t\tmake distclean before building (only without -d)\n
 -h\t\t\tshows this help message.\n
 -i IP\t\t\tip of the target N9/N950 device.\n
+-j JOBS\t\t\tnumber of parallel jobs during the build.\n
 -l\t\t\tInstall only on scratchbox host.\n
 -u USERNAME\t\tset username to connect to the device.\n
 -p FOLDER\t\tpath to webkit folder *inside* scratchbox. Can be absolute or relative.\n
@@ -24,15 +25,17 @@ IP=192.168.2.15
 BUILD_ONLY=0
 LOCAL_ONLY=0
 WEBKIT_SBOXDIR=/home/$USER/webkit
+JOBS=1
 
 
-while getopts p:i:u:blh ARG
+while getopts p:i:u:j:blh ARG
 do case "$ARG" in
     p) WEBKIT_SBOXDIR="$OPTARG";;
     i) IP="$OPTARG";;
     u) N9USER="$OPTARG";;
     b) BUILD_ONLY=1;;
 	l) LOCAL_ONLY=1;;
+	j) JOBS="$OPTARG";;
     h) echo -e $HELP && exit 0;;
     ?) echo -e $HELP && exit 1;;
 esac
@@ -43,6 +46,8 @@ echo "Project folder: $WEBKIT_SBOXDIR"
 echo "Build only? $BUILD_ONLY"
 echo "Local install only? $LOCAL_ONLY"
 
+if test $BUILD_ONLY -eq 0; then
+
 echo "Checking connection to the device..."
 if ping -c 2 -w 2 192.168.2.15; then
 	echo "Connected to N9"
@@ -51,7 +56,9 @@ else
 	exit 1
 fi
 
-export WEBKIT_TMPDIR=`mktemp -d`
+fi # BUILD_ONLY == 0
+
+WEBKIT_TMPDIR=`mktemp -d`
 
 echo "Building QtWebKit"
 
@@ -60,7 +67,7 @@ echo "Building QtWebKit"
 export PATH=/opt/qt5/bin:\$PATH
 export SBOX_REDIRECT_IGNORE=\$SBOX_REDIRECT_IGNORE:/usr/bin/perl
 cd $WEBKIT_SBOXDIR
-Tools/Scripts/build-webkit --qt --release --makeargs="-j9" --qmakearg="CONFIG+=use_qt_mobile_theme"
+Tools/Scripts/build-webkit --qt --release --makeargs="-j$JOBS" --qmakearg="CONFIG+=use_qt_mobile_theme"
 EOF
 
 if test $BUILD_ONLY -eq 1; then
